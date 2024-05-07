@@ -1,6 +1,3 @@
-"use client";
-import { useState, useEffect } from "react";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -10,42 +7,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import { getScripts } from "@/data/scripts";
+import { notFound } from "next/navigation";
 
-interface Script {
-  id: string;
-  role: string;
-  name: string;
-  description: string;
-  image: string;
-  image_name: string;
-  image_height: number;
-  image_width: number;
-  script_image: string;
-  script_image_name: string;
-  script_image_height: number;
-  script_image_width: number;
-}
 
-export default function Scripts() {
-  const [scripts, setScripts] = useState<Script[]>([]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-scripts");
-        const data = await response.json();
-        setScripts(data.scripts);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
+export default async function Scripts() {
+  const { data } = await getScripts();
 
-    fetchData();
-  }, []);
+  if (!data)
+    return notFound();
 
   const renderScriptCards = (role: String) => (
     <div className="mx-12">
-      {scripts
+      {data
         .filter((script) => script.role === role)
         .map((script) => (
           <Card

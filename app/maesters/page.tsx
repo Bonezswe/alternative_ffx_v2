@@ -1,44 +1,22 @@
-"use client";
-import { useState, useEffect } from "react";
 import BasicCardLayout from "@/components/basic-card-layout";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { getMaesters } from "@/data/maesters";
+import { notFound } from "next/navigation";
 
-interface Maesters {
-  id: string;
-  role: string;
-  image: string;
-  image_height: number;
-  image_width: number;
-  name: string;
-}
+export default async function Maesters() {
+  const { data } = await getMaesters();
 
-export default function Maesters() {
-  const [maesters, setMaesters] = useState<Maesters[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-maesters");
-        const data = await response.json();
-        setMaesters(data.maesters);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
+  if (!data)
+    return notFound();
 
   return (
     <div className="grid lg:grid-cols-2 gap-4 mx-12">
-      {Array.isArray(maesters) &&
-        maesters.map((maester) => (
-          <motion.div
-            whileHover={{ translateY: -3 }}
-            whileTap={{ scale: 0.95 }}
-            key={maester.id}
-          >
+      {data.map((maester) => (
+          // <motion.div
+          //   whileHover={{ translateY: -3 }}
+          //   whileTap={{ scale: 0.95 }}
+          //   key={maester.id}
+          // >
             <BasicCardLayout title={maester.name} description={maester.role}>
               <Image
                 src={maester.image}
@@ -48,7 +26,7 @@ export default function Maesters() {
                 className="flex justify-center items-center m-auto rounded-lg h-[500px] w-[500px] object-scale-down"
               />
             </BasicCardLayout>
-          </motion.div>
+          // </motion.div>
         ))}
     </div>
   );
