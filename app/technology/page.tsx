@@ -1,47 +1,26 @@
-"use client";
-import { useState, useEffect } from "react";
 import BasicCardLayout from "@/components/basic-card-layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getTechnology } from "@/data/technology";
+import { notFound } from "next/navigation";
 
-interface Technology {
-  id: string;
-  role: string;
-  name: string;
-  description: string;
-  image: string;
-  image_height: number;
-  image_width: number;
-}
+export default async function Technology() {
+  const { data } = await getTechnology();
 
-export default function Technology() {
-  const [technology, setTechnology] = useState<Technology[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-technology");
-        const data = await response.json();
-        setTechnology(data.technology);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
+  if (!data)
+    return notFound();
 
   const renderRaceCards = (role: String) => (
     <div className="mx-12">
-      {technology
+      {data
         .filter((technology) => technology.role === role)
         .map((tech) => (
-          <motion.div
-            whileHover={{ translateY: -3 }}
-            whileTap={{ scale: 0.95 }}
-            key={tech.id}
-          >
+          // <motion.div
+          //   whileHover={{ translateY: -3 }}
+          //   whileTap={{ scale: 0.95 }}
+          //   key={tech.id}
+          // >
             <BasicCardLayout title={tech.name} description={tech.description}>
               <Image
                 src={tech.image}
@@ -51,7 +30,7 @@ export default function Technology() {
                 className="flex justify-center items-center m-auto rounded-lg [500px] w-[500px] object-scale-down"
               />
             </BasicCardLayout>
-          </motion.div>
+          // </motion.div>
         ))}
     </div>
   );

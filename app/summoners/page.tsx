@@ -1,45 +1,23 @@
-"use client";
-import { useState, useEffect } from "react";
 import BasicCardLayout from "@/components/basic-card-layout";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getSummoners } from "@/data/summoners";
+import { notFound } from "next/navigation";
 
-interface Summoner {
-  id: string;
-  role: string;
-  image: string | null;
-  image_height: number | null;
-  image_width: number | null;
-  name: string;
-  description: string;
-}
+export default async function Summoners() {
+  const { data } = await getSummoners();
 
-export default function Summoners() {
-  const [summoners, setSummoners] = useState<Summoner[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-summoners");
-        const data = await response.json();
-        setSummoners(data.summoners);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
+  if (!data)
+    return notFound();
 
   return (
     <div className="grid lg:grid-cols-2 gap-4 mx-12">
-      {Array.isArray(summoners) &&
-        summoners.map((summoner) => (
-          <motion.div
-            whileHover={{ translateY: -3 }}
-            whileTap={{ scale: 0.95 }}
-            key={summoner.id}
-          >
+      {data.map((summoner) => (
+          // <motion.div
+          //   whileHover={{ translateY: -3 }}
+          //   whileTap={{ scale: 0.95 }}
+          //   key={summoner.id}
+          // >
             <BasicCardLayout
               title={summoner.name}
               description={summoner.description}
@@ -56,7 +34,7 @@ export default function Summoners() {
                   />
                 )}
             </BasicCardLayout>
-          </motion.div>
+          // </motion.div>
         ))}
     </div>
   );

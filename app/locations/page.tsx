@@ -1,48 +1,24 @@
-"use client";
-import { useState, useEffect } from "react";
 import BasicCardLayout from "@/components/basic-card-layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { getLocations } from "@/data/locations";
+import { notFound } from "next/navigation";
 
-interface Location {
-  id: string;
-  role: string;
-  image: string;
-  image_height: number;
-  image_width: number;
-  name: string;
-  description: string;
-  link: string | null;
-}
+export default async function Locations() {
+  const { data } = await getLocations();
 
-export default function Locations() {
-  const [locations, setLocations] = useState<Location[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-locations");
-        const data = await response.json();
-        setLocations(data.locations);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
+  if (!data)
+    return notFound();
 
   const renderLocationCards = (role: String) => (
     <div className="grid lg:grid-cols-2 gap-4 mx-12">
-      {locations
-        .filter((location) => location.role === role)
+      {data
         .map((location) => (
-          <motion.div
-            whileHover={{ translateY: -3 }}
-            whileTap={{ scale: 0.95 }}
-            key={location.id}
-          >
+          // <motion.div
+          //   whileHover={{ translateY: -3 }}
+          //   whileTap={{ scale: 0.95 }}
+          //   key={location.id}
+          // >
             <BasicCardLayout
               title={location.name}
               description={location.description}
@@ -55,25 +31,26 @@ export default function Locations() {
                 className="flex justify-center items-center m-auto rounded-lg h-[500px] w-[500px] object-cover"
               />
             </BasicCardLayout>
-          </motion.div>
+          // </motion.div>
         ))}
     </div>
   );
 
   return (
     <>
-      <Tabs className="text-center">
+    {/* Not sure if this is needed? */}
+      {/* <Tabs className="text-center">
         <TabsList>
           <TabsTrigger value="temples">Temples</TabsTrigger>
           <TabsTrigger value="agencies">Agencies</TabsTrigger>
         </TabsList>
         <TabsContent value="temples">
-          {/* {renderCharacterCards("Temples")} */}
+          {renderCharacterCards("Temples")}
         </TabsContent>
         <TabsContent value="agencies">
-          {/* {renderCharacterCards("Agencies")} */}
+          {renderCharacterCards("Agencies")}
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
       {renderLocationCards("Location")}
     </>
   );

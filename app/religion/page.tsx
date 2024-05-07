@@ -1,27 +1,8 @@
-"use client";
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 
 export default function Religion() {
   return (
     <>
-      <Tabs className="text-center">
-        <TabsList>
-          <TabsTrigger value="maesters">Maesters</TabsTrigger>
-          <TabsTrigger value="summoners">Summoners</TabsTrigger>
-          <TabsTrigger value="aeons">Aeons</TabsTrigger>
-        </TabsList>
-        <TabsContent value="maesters">
-          {/* {renderRaceCards("Maesters")} */}
-        </TabsContent>
-        <TabsContent value="summoners">
-          {/* {renderRaceCards("Summoners")} */}
-        </TabsContent>
-        <TabsContent value="aeons">
-          {/* {renderRaceCards("Aeons")} */}
-        </TabsContent>
-      </Tabs>
       <div className="grid md:grid-cols-2 gap-4 m-8">
         <Image
           src="/images/Child_Seymour.webp"

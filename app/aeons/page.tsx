@@ -1,48 +1,24 @@
-"use client";
-import { useState, useEffect } from "react";
 import BasicCardLayout from "@/components/basic-card-layout";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { notFound } from "next/navigation";
+import { getAeons } from "@/data/aeons";
 
-interface Aeon {
-  id: string;
-  role: string;
-  image: string;
-  image_height: number;
-  image_width: number;
-  name: string;
-  description: string;
-  link: string;
-  location: string;
-}
+export default async function AeonsPage() {
+  const { data } = await getAeons();
 
-export default function Aeons() {
-  const [aeons, setAeons] = useState<Aeon[]>([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch("/api/get-aeons");
-        const data = await response.json();
-        setAeons(data.aeons);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
+  if (!data || data.length === 0)
+    return notFound();
 
   return (
     <div className="grid lg:grid-cols-2 gap-4 mx-12">
-      {Array.isArray(aeons) &&
-        aeons.map((aeon) => (
-          <motion.div
-            whileHover={{ translateY: -3 }}
-            whileTap={{ scale: 0.95 }}
-            key={aeon.id}
-          >
+      {data.map((aeon) => (
+        // Need to convert back to client component or make wrapper to use motion
+          // <motion.div
+          //   whileHover={{ translateY: -3 }}
+          //   whileTap={{ scale: 0.95 }}
+          //   key={aeon.id}
+          // >
             <BasicCardLayout
               title={aeon.name}
               description={aeon.description}
@@ -62,7 +38,7 @@ export default function Aeons() {
                 className="flex justify-center items-center m-auto rounded-lg h-[500px] w-[500px] object-scale-down"
               />
             </BasicCardLayout>
-          </motion.div>
+          // </motion.div>
         ))}
     </div>
   );
